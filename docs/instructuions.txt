@@ -1,0 +1,239 @@
+================================================================================
+         VECTOR8_CPU ASSEMBLY TERMINAL - PRACTICAL REFERENCE
+================================================================================
+
+HOW TO USE
+----------
+1. Upload asm_terminal.py to RP2040
+2. Run it in Thonny
+3. Type assembly instructions line by line
+4. Type 'execute' to run all code once
+5. Type 'loop' to run code continuously (Ctrl+C to stop)
+6. Type 'clear' to erase buffer
+7. Type 'list' to see your code
+
+================================================================================
+INSTRUCTIONS
+================================================================================
+
+  LDA <val>     Load value into accumulator (0-255)
+  ADD <val>     Add value to accumulator
+  SUB <val>     Subtract value from accumulator
+  AND <val>     Bitwise AND
+  OR  <val>     Bitwise OR
+  XOR <val>     Bitwise XOR
+  INC           Increment accumulator (+1)
+  DEC           Decrement accumulator (-1)
+  LSL           Logical Shift Left
+  LSR           Logical Shift Right
+  OUT <val>     Write value to LED port (0x00-0xFF)
+  OUTA          Write accumulator value to LED port
+  SENSE         Read ultrasonic sensor -> Acc (0=clear, 1=detected)
+  DELAY <ms>    Wait in milliseconds
+
+================================================================================
+READY-TO-COPY PROGRAMS
+================================================================================
+
+--- 1. MATH DEMO (show accumulator results) ----------------------------------
+
+LDA 10
+ADD 20
+SUB 5
+INC
+execute
+
+Output:
+  [ 1] LDA   10  -> Acc = 10
+  [ 2] ADD   20  -> Acc = 30
+  [ 3] SUB    5  -> Acc = 25
+  [ 4] INC        -> Acc = 26
+  DONE. Final Acc = 26
+
+--- 2. LED ON / OFF (basic test) ---------------------------------------------
+
+OUT 0xFF
+DELAY 1000
+OUT 0x00
+execute
+
+Output: LED ON for 1 second, then OFF
+
+--- 3. LED BLINK PATTERN (8-bit alternating) ---------------------------------
+
+OUT 0xAA
+DELAY 500
+OUT 0x55
+DELAY 500
+OUT 0xAA
+DELAY 500
+OUT 0x55
+DELAY 500
+OUT 0x00
+execute
+
+Output: LED blinks alternating pattern 10101010 / 01010101
+
+--- 4. LED CHASE (single bit running) ----------------------------------------
+
+OUT 0x01
+DELAY 200
+OUT 0x02
+DELAY 200
+OUT 0x04
+DELAY 200
+OUT 0x08
+DELAY 200
+OUT 0x10
+DELAY 200
+OUT 0x20
+DELAY 200
+OUT 0x40
+DELAY 200
+OUT 0x80
+DELAY 200
+OUT 0x00
+execute
+
+Output: Single LED runs from bit 0 to bit 7
+
+--- 5. SENSOR READ + LED (one-time check) ----------------------------------
+
+SENSE
+OUTA
+execute
+
+Output:
+  [1] SENSE     -> Acc = 1 (DETECTED) or Acc = 0 (CLEAR)
+  [2] OUTA      -> LED = 0x01 or LED = 0x00
+  DONE.
+
+--- 6. SENSOR LOOP (continuous - use 'loop' command) -------------------------
+
+SENSE
+OUTA
+DELAY 200
+loop
+
+Output: Continuously reads sensor, LED follows. Ctrl+C to stop.
+        Code stays in buffer after stopping.
+
+--- 7. COUNTER ON LED (0 to 7) -----------------------------------------------
+
+LDA 0
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+INC
+OUTA
+DELAY 300
+OUT 0x00
+execute
+
+Output: LED shows values 1,2,3,4,5,6,7 with 300ms delay
+
+--- 8. BITWISE LOGIC DEMO ----------------------------------------------------
+
+LDA 0x0F
+AND 0x55
+OUTA
+DELAY 500
+LDA 0x0F
+OR 0xF0
+OUTA
+DELAY 500
+LDA 0xFF
+XOR 0xFF
+OUTA
+execute
+
+Output:
+  Acc = 0x05 -> LED = 0x05 (wait 500ms)
+  Acc = 0xFF -> LED = 0xFF (wait 500ms)
+  Acc = 0x00 -> LED = 0x00
+
+--- 9. SHIFT DEMO ------------------------------------------------------------
+
+LDA 0x01
+OUTA
+DELAY 300
+LSL
+OUTA
+DELAY 300
+LSL
+OUTA
+DELAY 300
+LSL
+OUTA
+execute
+
+Output: LED shows 0x01 -> 0x02 -> 0x04 -> 0x08
+
+--- 10. SENSOR AUTO-LOOP (best for demo) -------------------------------------
+
+SENSE
+OUTA
+DELAY 150
+loop
+
+How to use:
+  1. Type the 3 lines above
+  2. Type 'loop'
+  3. Wave hand near sensor -> LED turns ON
+  4. Remove hand -> LED turns OFF
+  5. Press Ctrl+C to stop
+  6. Code stays in buffer - type 'loop' again to restart
+
+================================================================================
+VALUE FORMATS
+================================================================================
+
+  Decimal:    42, 255, 0, 100
+  Hex:        0x2A, 0xFF, 0x00, 0xAA
+  Binary:     0b101010, 0b11111111
+
+================================================================================
+TERMINAL COMMANDS
+================================================================================
+
+  execute       Run code once
+  loop          Run code in continuous loop (Ctrl+C to stop)
+  clear         Clear code buffer
+  list          Show current code
+  help          Show help
+  quit          Exit
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"SPI not responding"
+  -> Check FPGA bitstream is loaded
+  -> Check wiring: GPIO0=MISO, GPIO1=CS, GPIO2=SCK, GPIO3=MOSI
+
+"Sensor always 0"
+  -> Wave hand very close (max 20cm)
+  -> Check HC-SR04 wiring and 10k resistor on Echo
+
+"LED not working"
+  -> Try 'OUT 0xFF' then 'execute' first
+  -> Check LED polarity
+
+================================================================================
