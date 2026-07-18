@@ -1,3 +1,21 @@
+# NOVA-8 – Custom 8‑Bit RISC Processor on SLG47910V FPGA
+
+[![FPGA](https://img.shields.io/badge/FPGA-iCE40%20UltraPlus-blue)](https://www.latticesemi.com/)
+[![Verilog](https://img.shields.io/badge/HDL-Verilog-forestgreen)](https://en.wikipedia.org/wiki/Verilog)
+[![MicroPython](https://img.shields.io/badge/MicroPython-RP2040-yellow)](https://micropython.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-purple)](LICENSE)
+
+---
+
+## 📌 Project Overview
+
+**NOVA-8** is a fully custom 8‑bit single‑cycle RISC processor implemented on the **SLG47910V** FPGA (iCE40 UltraPlus family). It features a Harvard architecture with 16 instructions, an SPI slave interface for real‑time instruction loading, an HC‑SR04 ultrasonic sensor interface, and a time‑multiplexed LED display.
+
+The processor is controlled by an onboard **RP2040** microcontroller running a MicroPython assembly terminal, providing an interactive programming environment over the internal SPI bus.
+
+---
+
+## 📁 Repository Structure
 
 ---
 
